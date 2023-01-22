@@ -8,6 +8,7 @@ const App = () => {
     const [player1, setPlayer1] = useState(null);
     const [player2, setPlayer2] = useState(null);
     const [showQuestion, setShowQuestion] = useState(false);
+    const [questions, setQuestions] = useState([]);
 
     const addPlayer = (name) => {
         if(players.indexOf(name)){
@@ -20,8 +21,10 @@ const App = () => {
         setPlayers(players.filter(player => player !== name));
     }
 
-    const startGame = () => {
+    const startGame = async () => {
         if (players.length >= 2) {
+            const quest = await getQuestions();
+            setQuestions(quest);
             setPlayer1(players[Math.floor(Math.random() * players.length)]);
             setPlayer2(players[Math.floor(Math.random() * players.length)]);
             setShowQuestion(true);
@@ -39,11 +42,15 @@ const App = () => {
         setPlayer2(players[player2]);
     }
 
-    const questions = [
-        "Teilt unter euch 5 Shots auf.",
-        "Welches Tier ist das schnellste auf Land?",
-        "Wie heißt der höchste Berg der Welt?"
-    ]
+    async function getQuestions() {
+        try {
+            const response = await fetch('http://api.fingern-dastrinkspiel.de/api/Questions');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching questions:', error);
+        }
+    }
 
     const resetGame = () => {
         setPlayers([]);
