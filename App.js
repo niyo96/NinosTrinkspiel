@@ -22,9 +22,12 @@ const App = () => {
     }
 
     const startGame = async () => {
+
         if (players.length >= 2) {
             const quest = await getQuestions();
-            setQuestions(quest);
+
+            let questPlayer = quest.map(x => x.split('{RandomPlayer}').join(players[Math.floor(Math.random() * players.length)]));
+            setQuestions(questPlayer);
             setPlayer1(players[Math.floor(Math.random() * players.length)]);
             setPlayer2(players[Math.floor(Math.random() * players.length)]);
             setShowQuestion(true);
@@ -98,7 +101,6 @@ const App = () => {
             {showQuestion && (
                 <View style={styles.gameContainer}>
 
-                    <Text style={styles.player}>{player1} & {player2}</Text>
                     <Text style={styles.question}>{questions[currentQuestion]}</Text>
                     <View style={styles.buttonContainer}>
                         <Button
@@ -155,7 +157,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     question: {
-        fontSize: 16,
+        fontSize: 20,
+        fontWeight: 'bold',
         marginBottom: 20,
     },
 });
