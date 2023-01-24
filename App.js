@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, FlatList } from 'react-native';
+import React, {useState} from 'react';
+import {Button, FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
 
 const App = () => {
     const [playerName, setPlayerName] = useState('');
@@ -25,9 +25,9 @@ const App = () => {
 
         if (players.length >= 2) {
             const quest = await getQuestions();
-
-            let questPlayer = quest.map(x => x.split('{RandomPlayer}').join(players[Math.floor(Math.random() * players.length)]));
-            setQuestions(questPlayer);
+            //let questPlayer = quest.map(x => x.split('{RandomPlayer}').join(players[Math.floor(Math.random() * players.length)]));
+            //setQuestions(questPlayer);
+            setQuestions(quest);
             setPlayer1(players[Math.floor(Math.random() * players.length)]);
             setPlayer2(players[Math.floor(Math.random() * players.length)]);
             setShowQuestion(true);
@@ -47,11 +47,16 @@ const App = () => {
 
     async function getQuestions() {
         try {
-            const response = await fetch('http://api.fingern-dastrinkspiel.de/api/Questions');
-            const data = await response.json();
-            return data;
+            const response = await fetch('http://api.fingern-dastrinkspiel.de/api/Questions/normalCatalog', {
+                method: 'PUT',
+                body: JSON.stringify({ players }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            return await response.body.json();
         } catch (error) {
-            console.error('Error fetching questions:', error);
+            console.error('Error updating questions:', error);
         }
     }
 
