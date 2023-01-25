@@ -24,9 +24,7 @@ const App = () => {
     const startGame = async () => {
 
         if (players.length >= 2) {
-            const quest = await getQuestions();
-            //let questPlayer = quest.map(x => x.split('{RandomPlayer}').join(players[Math.floor(Math.random() * players.length)]));
-            //setQuestions(questPlayer);
+            const quest = await getNormalQuestions();
             setQuestions(quest);
             setPlayer1(players[Math.floor(Math.random() * players.length)]);
             setPlayer2(players[Math.floor(Math.random() * players.length)]);
@@ -45,16 +43,17 @@ const App = () => {
         setPlayer2(players[player2]);
     }
 
-    async function getQuestions() {
+    async function getNormalQuestions() {
         try {
-            const response = await fetch('http://api.fingern-dastrinkspiel.de/api/Questions/normalCatalog', {
+            const sendMessg = {
                 method: 'PUT',
-                body: JSON.stringify({ players }),
+                body: JSON.stringify(players),
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            });
-            return await response.body.json();
+            };
+            const response = await fetch('http://api.fingern-dastrinkspiel.de/api/Questions/normalCatalog', sendMessg);
+            return await response.json();
         } catch (error) {
             console.error('Error updating questions:', error);
         }
@@ -167,6 +166,5 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
 });
-
 
 export default App;
